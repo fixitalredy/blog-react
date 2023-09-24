@@ -1,0 +1,103 @@
+.articles {
+  &__article {
+    margin-top: 26px;
+  }
+}
+.article {
+  display: block;
+  height: 140px;
+  width: 938px;
+  background-color: white;
+  display: grid;
+  gap:10px;
+  padding: 20px;
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: top;
+    height: fit-content;
+    line-height: 1.2;
+  }
+  &__meta {
+    display: flex;
+    max-width: 45.5em;
+    flex-direction: column;
+    align-items: top;
+    column-gap: 10px;
+    row-gap: 15px;
+  }
+  &__subheader {
+    display: flex;
+    gap:10px;
+    max-height: 48px;
+  }
+  &__tags {
+    display: flex;
+    gap:10px
+  }
+  &__title {
+    font-size: 20px;
+    color: #1890ff;
+    font-weight: 400;
+    align-self: center;
+  }
+  &__like {
+    display: inline-flex;
+    align-items: center;
+    justify-content: start;
+    width: calc(20% - 10px);
+    height: 20px;
+    padding-top: 3px;
+    color: rgba($color: #000000, $alpha: 0.75);
+    font-size: 12px;
+    &::before {
+      content: url('./Vector.png');
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      margin-right: 5px;
+    }
+  }
+  &__tag {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: min-content;
+    font-size: 12px;
+    font-weight: 500;
+    color: rgba($color: #000000, $alpha: 0.75);
+    border: rgba($color: #000000, $alpha: 0.75) solid 1px;
+    width: fit-content;
+    padding-left: 5px;
+    padding-right: 5px;
+    height: 20px;
+    border-radius: 5px;
+  }
+  &__profile-info {
+    display: flex;
+    position: relative;
+  }
+  &__name {
+    margin-right: 20px;
+  }
+  &__date {
+    display: inline-block;
+    width: max-content;
+    font-size: 12px;
+    color: rgba($color: #000000, $alpha: 0.5);
+    font-weight: 500;
+  }
+  &__description {
+    font-size: 12px;
+    line-height: 22px;
+    width: 682px;
+    height: 45px;
+    overflow:hidden ;
+  }
+}
+.name {
+  font-size: 18px;
+}
+.avatar {
+  border-radius: 50px;
+}

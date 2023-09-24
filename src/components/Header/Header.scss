@@ -1,0 +1,35 @@
+.header {
+  position: relative;
+  background-color: white;
+  height: 80px;
+
+  &__content {
+    display: flex;
+    justify-content: space-between;
+    height: 100%;
+    align-items: center;
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+  &__title {
+    display: inline-block;
+    font-size: 18px;
+    font-family: "open-sans";
+  }
+  &__sign-button {
+    height: 51px;
+    width: 109px;
+    background-color: white;
+    font-size: 18px;
+  }
+  &__sign-button--in {
+    margin-left: auto;
+    border: none;
+  }
+  &__sign-button--up {
+    border: 1px solid #52c41a;
+    margin-left: 10px;
+    color: #52c41a;
+    border-radius: 10px;
+  }
+}
