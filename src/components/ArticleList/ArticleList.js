@@ -20,6 +20,7 @@ function ArticleList() {
           tagList={article.tagList}
           author={article.author}
           createdAt={article.createdAt}
+          slug={article.slug}
         />
       ))}
     </article>

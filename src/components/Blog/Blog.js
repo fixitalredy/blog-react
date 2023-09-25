@@ -1,4 +1,4 @@
-import { Route } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -16,19 +16,21 @@ function Blog() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchArticles());
+    dispatch(fetchArticles(page));
   }, [dispatch, page]);
   return (
     <div className="Blog">
       <Header />
       <main className="main">
         <div className="main__content">
-          <Route path="/articles">
-            <Main />
-          </Route>
-          <Route path="/articles/1">
-            <Article />
-          </Route>
+          <Switch>
+            <Route path="/articles" exact>
+              <Main />
+            </Route>
+            <Route path="/articles/:slug">
+              <Article />
+            </Route>
+          </Switch>
         </div>
       </main>
     </div>

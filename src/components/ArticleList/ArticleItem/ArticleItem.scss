@@ -1,15 +1,15 @@
 .articles {
   &__article {
     margin-top: 26px;
+    height: 140px;
   }
 }
 .article {
-  display: block;
-  height: 140px;
   width: 938px;
+  display: flex;
+  flex-direction: column;
   background-color: white;
-  display: grid;
-  gap:10px;
+  gap:15px;
   padding: 20px;
   &__header {
     display: flex;
@@ -40,6 +40,7 @@
     color: #1890ff;
     font-weight: 400;
     align-self: center;
+    text-decoration: none;
   }
   &__like {
     display: inline-flex;

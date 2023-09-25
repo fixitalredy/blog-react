@@ -1,11 +1,14 @@
 import React from 'react';
 import './Header.scss';
+import { NavLink } from 'react-router-dom';
 
 function ArticleList() {
   return (
     <header className="header">
       <div className="header__content">
-        <h1 className="header__title">Realworld Blog</h1>
+        <NavLink to="/articles" className="header__title">
+          Realworld Blog
+        </NavLink>
         <button
           className="header__sign-button header__sign-button--in"
           type="button"

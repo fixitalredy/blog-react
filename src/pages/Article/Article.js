@@ -1,7 +1,9 @@
 import React from 'react';
 
+import ArticleDetails from '../../components/ArticleDetails/ArticleDetails';
+
 function Article() {
-  return <h1>Article</h1>;
+  return <ArticleDetails />;
 }
 
 export default Article;

@@ -1,22 +1,19 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import axios from 'axios';
 
+axios.defaults.baseURL = 'https://api.realworld.io/api';
+/* eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImVtYWlsIjoidmllbm4xMDA5QGdtYWlsLmNvbSIsInVzZXJuYW1lIjoidmllbm4xMDA5In0sImlhdCI6MTY5NTY0ODYwMywiZXhwIjoxNzAwODMyNjAzfQ.GXN8e2gwrwpte8WyVN6E9GPmsMGnql_gSJsUBUzGgVI */
+/* eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1MTE4NDkxZmYzY2M4MWIwMGRhYjI3OSIsInVzZXJuYW1lIjoidmllbm4xMDA5IiwiZXhwIjoxNzAwODMwODY1LCJpYXQiOjE2OTU2NDY4NjV9.C72ei4inuqX4F2Hq-SDgTyJmjmiFkHrCOndf47tDD-w */
 export const fetchArticles = createAsyncThunk(
   'articles/fetchArticles',
   async (page, { rejectWithValue }) => {
     try {
-      let response = await fetch(
-        `https://api.realworld.io/api/articles?page=${page}`,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: 'Bearer  xxxxxx.yyyyyyy.zzzzzz',
-          },
-        }
+      const response = await axios.get(
+        `/articles/?limit=5&offset=${page * 5 - 5}`
       );
-      response = await response.json();
-      const data = response.articles;
-      return data;
+      const result = response.data.articles;
+      console.log(response.data);
+      return result;
     } catch (error) {
       rejectWithValue(error);
     }
@@ -33,18 +30,19 @@ const articlesSlice = createSlice({
       state.page = action.payload;
     },
   },
-  extraReducers: {
-    [fetchArticles.pending]: (state) => {
-      state.status = 'loading';
-    },
-    [fetchArticles.fulfilled]: (state, action) => {
-      state.status = 'resolved';
-      state.articles = action.payload;
-    },
-    [fetchArticles.rejected]: (state, action) => {
-      state.status = 'rejected';
-      state.error = action.payload;
-    },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchArticles.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(fetchArticles.fulfilled, (state, action) => {
+        state.status = 'resolved';
+        state.articles = action.payload;
+      })
+      .addCase(fetchArticles.rejected, (state, action) => {
+        state.status = 'rejected';
+        state.error = action.payload;
+      });
   },
 });
 
