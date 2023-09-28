@@ -49,7 +49,6 @@ export const loginAuth = createAsyncThunk(
     };
     try {
       const response = await axios(config);
-      console.log(response.data.user.token);
       return response.data;
     } catch (err) {
       rejectWithValue(err.response.data);
@@ -58,22 +57,25 @@ export const loginAuth = createAsyncThunk(
   }
 );
 
-const initialState = { regStatus: 'idle' };
+const initialState = { logStatus: 'idle', logedPerson: null };
 
 const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(registerAuth.pending, (state) => {
-      state.regStatus = 'loading';
-    });
-    builder.addCase(registerAuth.fulfilled, (state) => {
-      state.regStatus = 'resolved';
-    });
-    builder.addCase(registerAuth.rejected, (state) => {
-      state.regStatus = 'rejected';
-    });
+    builder
+      .addCase(loginAuth.pending, (state) => {
+        state.logStatus = 'loading';
+      })
+      .addCase(loginAuth.fulfilled, (state, action) => {
+        state.logStatus = 'loged';
+        state.logedPerson = { ...action.payload.user, token: '' };
+      })
+
+      .addCase(loginAuth.rejected, (state) => {
+        state.logStatus = 'rejected';
+      });
   },
 });
 

@@ -14,7 +14,7 @@
   &__title {
     display: inline-block;
     font-size: 18px;
-    font-family: "open-sans";
+    font-family: 'open-sans';
     text-decoration: none;
     color: inherit;
   }
@@ -31,13 +31,33 @@
     color: inherit;
   }
   &__sign-button--in {
-    margin-left: auto;  
-    border:none
+    margin-left: auto;
+    border: none;
   }
   &__sign-button--up {
     border: 1px solid #52c41a;
     margin-left: 10px;
     color: #52c41a;
     border-radius: 10px;
+  }
+  &__new-article {
+    width: 112px;
+    border: 1px solid #52c41a;
+    color: #52c41a;
+    height: 31px;
+    font-size: 14px;
+    border-radius: 10px;
+    margin-right: 10px;
+  }
+  &__logout {
+    border: 1px solid rgba($color: #000000, $alpha: 0.5);
+    border-radius: 10px;
+  }
+  &__profile {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    width: 441px;
+    justify-content: space-between;
   }
 }

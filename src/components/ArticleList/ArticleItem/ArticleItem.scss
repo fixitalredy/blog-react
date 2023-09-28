@@ -83,9 +83,7 @@
   &__profile-info {
     display: flex;
     position: relative;
-  }
-  &__name {
-    margin-right: 20px;
+    gap:20px;
   }
   &__date {
     display: inline-block;
