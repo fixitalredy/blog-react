@@ -1,11 +1,14 @@
+/* eslint-disable react/no-children-prop */
 import React from 'react';
 import format from 'date-fns/format';
 import { Link } from 'react-router-dom';
+import classNames from 'classnames';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 import './ArticleItem.scss';
 
 function ArticleItem({
-  classname,
   title,
   description,
   favoritesCount,
@@ -13,13 +16,24 @@ function ArticleItem({
   author,
   createdAt,
   slug,
+  detailed,
+  body,
 }) {
+  const classnamesArticle = classNames('article', {
+    articles__article: !detailed,
+    main__article: detailed,
+  });
+  const classnamesTag = classNames('article__tag', {
+    'article__tag--detailed': detailed,
+  });
+  const classnamesDescription = classNames('article__description', {
+    'article__description--detailed': detailed,
+  });
   const tags = tagList.map((tag) => (
-    <div className="article__tag" key={tag}>
+    <div className={classnamesTag} key={tag}>
       {tag}
     </div>
   ));
-  console.log(classname);
   const cutDescription = (desc) => {
     if (desc.length < 221) {
       return desc;
@@ -27,15 +41,10 @@ function ArticleItem({
     const newDesc = desc.substring(0, 221);
     return `${newDesc.slice(0, newDesc.lastIndexOf(' '))}...`;
   };
-
   const formatedDate = format(new Date(createdAt), 'MMMM d, yyyy');
-
+  // eslint-disable-next-line quotes
   return (
-    <article
-      className={`${
-        classname.length !== 0 ? classname : 'articles__article'
-      } article`}
-    >
+    <article className={classnamesArticle}>
       <div className="article__header">
         <div className="article__meta">
           <div className="article__subheader">
@@ -60,7 +69,10 @@ function ArticleItem({
           />
         </div>
       </div>
-      <div className="article__description">{cutDescription(description)}</div>
+      <div className={classnamesDescription}>{cutDescription(description)}</div>
+      <ReactMarkdown className="article__body" remarkPlugins={[remarkGfm]}>
+        {body}
+      </ReactMarkdown>
     </article>
   );
 }

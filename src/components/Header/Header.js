@@ -9,18 +9,20 @@ function ArticleList() {
         <NavLink to="/articles" className="header__title">
           Realworld Blog
         </NavLink>
-        <button
+        <NavLink
+          to="/sign-in"
           className="header__sign-button header__sign-button--in"
           type="button"
         >
           Sign In
-        </button>
-        <button
+        </NavLink>
+        <NavLink
+          to="/sign-up"
           className="header__sign-button header__sign-button--up"
           type="button"
         >
           Sign Up
-        </button>
+        </NavLink>
       </div>
     </header>
   );

@@ -15,16 +15,24 @@
     display: inline-block;
     font-size: 18px;
     font-family: "open-sans";
+    text-decoration: none;
+    color: inherit;
   }
   &__sign-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     height: 51px;
     width: 109px;
     background-color: white;
     font-size: 18px;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
   }
   &__sign-button--in {
-    margin-left: auto;
-    border: none;
+    margin-left: auto;  
+    border:none
   }
   &__sign-button--up {
     border: 1px solid #52c41a;

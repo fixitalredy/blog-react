@@ -1,4 +1,4 @@
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, Redirect } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -6,6 +6,8 @@ import { fetchArticles } from '../../store/articlesSlice';
 import Main from '../../pages/Main/Main';
 import Article from '../../pages/Article/Article';
 import Header from '../Header/Header';
+import SignUp from '../../pages/SignForms/SignUp';
+import SignIn from '../../pages/SignForms/SignIn';
 
 import './Blog.scss';
 
@@ -18,18 +20,18 @@ function Blog() {
   useEffect(() => {
     dispatch(fetchArticles(page));
   }, [dispatch, page]);
+
   return (
     <div className="Blog">
       <Header />
       <main className="main">
         <div className="main__content">
           <Switch>
-            <Route path="/articles" exact>
-              <Main />
-            </Route>
-            <Route path="/articles/:slug">
-              <Article />
-            </Route>
+            <Route path="/" exact render={() => <Redirect to="/articles" />} />
+            <Route path="/articles" exact component={Main} />
+            <Route path="/articles/:slug" component={Article} />
+            <Route path="/sign-up" component={SignUp} />
+            <Route path="/sign-in" component={SignIn} />
           </Switch>
         </div>
       </main>
