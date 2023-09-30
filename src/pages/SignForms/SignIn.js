@@ -2,7 +2,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 
@@ -17,9 +17,11 @@ function SignIn() {
   } = useForm();
   const dispatch = useDispatch();
   const regEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/i;
+  const history = useHistory();
 
   const submitHandler = (data) => {
     dispatch(loginAuth(data));
+    history.replace('/articles');
   };
   return (
     <div className="main__sign-container">

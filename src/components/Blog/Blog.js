@@ -1,6 +1,6 @@
 import { Route, Switch, Redirect } from 'react-router-dom';
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import { fetchArticles } from '../../store/articlesSlice';
 import Main from '../../pages/Main/Main';
@@ -12,14 +12,11 @@ import SignIn from '../../pages/SignForms/SignIn';
 import './Blog.scss';
 
 function Blog() {
-  const pageSelector = (state) => state.page;
-  const page = useSelector(pageSelector);
-
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchArticles(page));
-  }, [dispatch, page]);
+    dispatch(fetchArticles());
+  }, [dispatch]);
 
   return (
     <div className="Blog">

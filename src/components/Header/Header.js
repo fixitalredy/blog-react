@@ -4,15 +4,17 @@ import { NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 function ArticleList() {
-  const logedPersonSelector = (state) => state.authReducer.logedPerson;
-  const logedPerson = useSelector(logedPersonSelector);
+  const isLoggedSelector = (state) => state.authReducer.isLogged;
+  const isLogged = useSelector(isLoggedSelector);
+  const loggedPersonSelector = (state) => state.authReducer.loggedPerson;
+  const loggedPerson = useSelector(loggedPersonSelector);
   return (
     <header className="header">
       <div className="header__content">
         <NavLink to="/articles" className="header__title">
           Realworld Blog
         </NavLink>
-        {logedPerson ? (
+        {isLogged ? (
           <div className="header__profile">
             <NavLink
               to="/new-article"
@@ -21,10 +23,10 @@ function ArticleList() {
             >
               Create article
             </NavLink>
-            <div className="article__name name">{logedPerson.username}</div>
+            <div className="article__name name">{loggedPerson.username}</div>
             <img
               className="article__avatar avatar"
-              src={`${logedPerson.image}`}
+              src={loggedPerson.image}
               width="50"
               height="50"
               alt="avatar"

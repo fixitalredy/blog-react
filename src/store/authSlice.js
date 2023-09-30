@@ -24,7 +24,7 @@ export const registerAuth = createAsyncThunk(
     };
     try {
       const response = await axios(config);
-      return response.data.token;
+      return response.data.user;
     } catch (err) {
       rejectWithValue(err.response.data);
     }
@@ -33,7 +33,7 @@ export const registerAuth = createAsyncThunk(
 );
 
 export const loginAuth = createAsyncThunk(
-  'auth/register',
+  'auth/login',
   async (registerData, { rejectWithValue }) => {
     const personData = {
       user: {
@@ -49,7 +49,7 @@ export const loginAuth = createAsyncThunk(
     };
     try {
       const response = await axios(config);
-      return response.data;
+      return response.data.user;
     } catch (err) {
       rejectWithValue(err.response.data);
     }
@@ -57,22 +57,43 @@ export const loginAuth = createAsyncThunk(
   }
 );
 
-const initialState = { logStatus: 'idle', logedPerson: null };
+const initialState = {
+  isLogged: false,
+  loggedPerson: {
+    username: '',
+    email: '',
+    image: '',
+  },
+};
 
 const authSlice = createSlice({
   name: 'auth',
   initialState,
-  reducers: {},
+  reducers: {
+    setLogged: (state, action) => {
+      state.isLogged = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
-      .addCase(loginAuth.pending, (state) => {
-        state.logStatus = 'loading';
-      })
       .addCase(loginAuth.fulfilled, (state, action) => {
-        state.logStatus = 'loged';
-        state.logedPerson = { ...action.payload.user, token: '' };
+        localStorage.token = JSON.stringify(action.payload.token);
+        state.isLogged = true;
+        state.loggedPerson = {
+          username: action.payload.username,
+          email: action.payload.email,
+          image: action.payload.image,
+        };
       })
-
+      .addCase(registerAuth.fulfilled, (state, action) => {
+        state.isLogged = true;
+        localStorage.token = JSON.stringify(action.payload.token);
+        state.loggedPerson = {
+          username: action.payload.username,
+          email: action.payload.email,
+          image: action.payload.image,
+        };
+      })
       .addCase(loginAuth.rejected, (state) => {
         state.logStatus = 'rejected';
       });
