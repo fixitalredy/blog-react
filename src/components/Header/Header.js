@@ -1,13 +1,21 @@
 import React from 'react';
 import './Header.scss';
 import { NavLink } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { authActions } from '../../store/authSlice';
 
 function ArticleList() {
   const isLoggedSelector = (state) => state.authReducer.isLogged;
   const isLogged = useSelector(isLoggedSelector);
   const loggedPersonSelector = (state) => state.authReducer.loggedPerson;
   const loggedPerson = useSelector(loggedPersonSelector);
+  const dispatch = useDispatch();
+
+  const logoutHandler = () => {
+    dispatch(authActions.setLogged(false));
+    localStorage.removeItem('user');
+  };
   return (
     <header className="header">
       <div className="header__content">
@@ -23,18 +31,21 @@ function ArticleList() {
             >
               Create article
             </NavLink>
-            <div className="article__name name">{loggedPerson.username}</div>
-            <img
-              className="article__avatar avatar"
-              src={loggedPerson.image}
-              width="50"
-              height="50"
-              alt="avatar"
-            />
+            <NavLink to="/profile" className="header__profile-info">
+              <div className="article__name name">{loggedPerson.username}</div>
+              <img
+                className="article__avatar avatar"
+                src={loggedPerson.image}
+                width="50"
+                height="50"
+                alt="avatar"
+              />
+            </NavLink>
             <NavLink
-              to="/new-article"
+              to="/sign-in"
               className="header__sign-button header__logout"
               type="button"
+              onClick={logoutHandler}
             >
               Logout
             </NavLink>

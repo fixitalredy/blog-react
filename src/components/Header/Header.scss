@@ -58,5 +58,12 @@
     align-items: center;
     gap: 20px;
     justify-content: space-between;
+    &-info {
+      display: flex;
+      align-items: center;
+      color: inherit;
+      gap: 10px;
+      text-decoration: none;
+    }
   }
 }
