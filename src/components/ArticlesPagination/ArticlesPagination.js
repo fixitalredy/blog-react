@@ -2,12 +2,12 @@ import React from 'react';
 import { Pagination } from 'antd';
 import { useDispatch } from 'react-redux';
 
-import { articlesActions } from '../../store/articlesSlice';
+import { fetchArticles } from '../../store/articlesSlice';
 
 function ArticlesPagination() {
   const dispatch = useDispatch();
   const pageHandler = (key) => {
-    dispatch(articlesActions.changePage(key));
+    dispatch(fetchArticles(key));
   };
   return (
     <Pagination

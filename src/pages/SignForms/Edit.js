@@ -14,7 +14,12 @@ function Edit() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({});
+  } = useForm({
+    avatar: null,
+    email: null,
+    password: null,
+    username: null,
+  });
   const submitHandler = (data) => {
     dispatch(edit(data));
   };
@@ -111,7 +116,7 @@ function Edit() {
         <input
           type="submit"
           className="main__sign-submit"
-          id="sumbitReg"
+          id="sumbit"
           value="Save"
         />
       </form>
