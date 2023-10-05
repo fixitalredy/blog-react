@@ -52,6 +52,36 @@ export const createArticle = createAsyncThunk(
         config
       );
       const result = response.data;
+      return result;
+    } catch (error) {
+      rejectWithValue(error);
+    }
+    return null;
+  }
+);
+export const updateArticle = createAsyncThunk(
+  'articles/updateArticle',
+  async ({ updatedData, slug }, { rejectWithValue, getState }) => {
+    const user = getState().authReducer.loggedPerson;
+    const config = {
+      headers: {
+        Authorization: `Bearer ${user.token}`,
+      },
+    };
+    try {
+      const response = await axios.put(
+        `/articles/${slug}`,
+        {
+          article: {
+            title: updatedData.title,
+            body: updatedData.text,
+            description: updatedData.description,
+            tagList: updatedData.tags,
+          },
+        },
+        config
+      );
+      const result = response.data;
       console.log(result);
       return result;
     } catch (error) {
@@ -60,12 +90,22 @@ export const createArticle = createAsyncThunk(
     return null;
   }
 );
-const initialState = { status: null, articles: [], error: null, page: 1 };
+
+const initialState = {
+  status: null,
+  articles: [],
+  error: null,
+  articlePost: null,
+};
 
 const articlesSlice = createSlice({
   name: 'articles',
   initialState,
-  reducers: {},
+  reducers: {
+    resetArticlePost: (state) => {
+      state.articlePost = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchArticles.pending, (state) => {
@@ -78,6 +118,12 @@ const articlesSlice = createSlice({
       .addCase(fetchArticles.rejected, (state, action) => {
         state.status = 'rejected';
         state.error = action.payload;
+      })
+      .addCase(updateArticle.rejected, (state) => {
+        state.articlePost = 'rejected';
+      })
+      .addCase(updateArticle.fulfilled, (state) => {
+        state.articlePost = 'resolved';
       });
   },
 });

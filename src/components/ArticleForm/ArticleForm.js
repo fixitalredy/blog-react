@@ -1,13 +1,23 @@
+/* eslint-disable react-redux/useSelector-prefer-selectors */
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { uid } from 'uid';
+import { useHistory } from 'react-router-dom';
 import './newArticle.scss';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom/cjs/react-router-dom.min';
 
-import { createArticle } from '../../store/articlesSlice';
+import {
+  articlesActions,
+  createArticle,
+  updateArticle,
+} from '../../store/articlesSlice';
 
-function NewArticle() {
+function ArticleForm({ editing }) {
+  const params = useParams();
+  const history = useHistory();
+  const articlePost = useSelector((state) => state.articlesReducer.articlePost);
   const {
     register,
     handleSubmit,
@@ -39,12 +49,29 @@ function NewArticle() {
       }
       return accumulator;
     }, []);
-    dispatch(createArticle({ ...data, tags: tagsArr }));
+    if (!editing) {
+      dispatch(createArticle({ ...data, tags: tagsArr }));
+    } else {
+      dispatch(
+        updateArticle({
+          updatedData: { ...data, tags: tagsArr },
+          slug: params.slug,
+        })
+      );
+    }
   };
+  useEffect(() => {
+    if (articlePost === 'resolved') {
+      history.replace('/articles');
+      dispatch(articlesActions.resetArticlePost());
+    }
+  }, [articlePost, dispatch, history]);
   return (
     <section className="main__new-article article">
       <div className="main__new-article-header">
-        <h2 className="main__new-article-header">Create new article</h2>
+        <h2 className="main__new-article-header">
+          {editing ? 'Edit Article' : 'Create new article'}
+        </h2>
       </div>
       <form
         className="main__new-article-form"
@@ -131,4 +158,4 @@ function NewArticle() {
   );
 }
 
-export default NewArticle;
+export default ArticleForm;

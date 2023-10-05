@@ -1,8 +1,10 @@
+/* eslint-disable react-redux/useSelector-prefer-selectors */
 /* eslint-disable react/no-children-prop */
 import React from 'react';
 import format from 'date-fns/format';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
+import { useSelector } from 'react-redux';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
@@ -19,6 +21,7 @@ function ArticleItem({
   detailed,
   body,
 }) {
+  const user = useSelector((state) => state.authReducer.loggedPerson);
   const classnamesArticle = classNames('article', {
     articles__article: !detailed,
     main__article: detailed,
@@ -54,22 +57,43 @@ function ArticleItem({
             <div className="article__like">{favoritesCount}</div>
           </div>
           <div className="article__tags"> {tags}</div>
-        </div>
-        <div className="article__profile-info">
-          <div className="article__text">
-            <div className="article__name name">{author.username}</div>
-            <div className="article__date">{formatedDate}</div>
+          <div className={classnamesDescription}>
+            {cutDescription(description)}
           </div>
-          <img
-            className="article__avatar avatar"
-            src={`${author.image}`}
-            width="50"
-            height="50"
-            alt="avatar"
-          />
+        </div>
+        <div className="article__right-column">
+          <div className="article__profile-info">
+            <div className="article__text">
+              <div className="article__name name">{author.username}</div>
+              <div className="article__date">{formatedDate}</div>
+            </div>
+            <img
+              className="article__avatar avatar"
+              src={`${author.image}`}
+              width="50"
+              height="50"
+              alt="avatar"
+            />
+          </div>
+          {detailed && author.username === user.username && (
+            <div className="article__functional">
+              <button
+                className="header__delete-button header-button"
+                type="button"
+              >
+                Delete
+              </button>
+              <Link
+                to={`/articles/${slug}/edit`}
+                className="header__edit-button header-button"
+                type="button"
+              >
+                Edit
+              </Link>
+            </div>
+          )}
         </div>
       </div>
-      <div className={classnamesDescription}>{cutDescription(description)}</div>
       <ReactMarkdown className="article__body" remarkPlugins={[remarkGfm]}>
         {body}
       </ReactMarkdown>

@@ -1,6 +1,6 @@
 import { Route, Switch, Redirect } from 'react-router-dom';
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import Main from '../../pages/Main/Main';
 import Article from '../../pages/Article/Article';
@@ -10,14 +10,15 @@ import SignIn from '../../pages/SignForms/SignIn';
 import Edit from '../../pages/SignForms/Edit';
 import { authActions } from '../../store/authSlice';
 import { fetchArticles } from '../../store/articlesSlice';
-import newArticle from '../../pages/newArticle/newArticle';
+import CreateArticle from '../../pages/Article/CreateArticle';
+import EditArticle from '../../pages/Article/EditArticle';
 
 import './Blog.scss';
 
 function Blog() {
   const dispatch = useDispatch();
   // eslint-disable-next-line react-redux/useSelector-prefer-selectors
-
+  const articlePost = useSelector((state) => state.articlesReducer.articlePost);
   useEffect(() => {
     if (localStorage.user) {
       dispatch(authActions.setLogged(true));
@@ -26,7 +27,7 @@ function Blog() {
       dispatch(authActions.setLogged(false));
       dispatch(fetchArticles());
     }
-  }, [dispatch]);
+  }, [dispatch, articlePost]);
 
   return (
     <div className="Blog">
@@ -36,11 +37,12 @@ function Blog() {
           <Switch>
             <Route path="/" exact render={() => <Redirect to="/articles" />} />
             <Route path="/articles" exact component={Main} />
-            <Route path="/articles/:slug" component={Article} />
+            <Route path="/articles/:slug" exact component={Article} />
             <Route path="/sign-up" component={SignUp} />
             <Route path="/sign-in" component={SignIn} />
             <Route path="/profile" component={Edit} />
-            <Route path="/new-article" component={newArticle} />
+            <Route path="/new-article" component={CreateArticle} />
+            <Route path="/articles/:slug/edit" component={EditArticle} />
           </Switch>
         </div>
       </main>
