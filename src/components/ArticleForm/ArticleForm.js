@@ -1,12 +1,13 @@
 /* eslint-disable react-redux/useSelector-prefer-selectors */
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useState, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import React, { useEffect, useState } from 'react';
+import { useFieldArray, useForm } from 'react-hook-form';
 import { uid } from 'uid';
-import { useHistory } from 'react-router-dom';
 import './newArticle.scss';
+import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom/cjs/react-router-dom.min';
+import { Alert } from 'antd';
 
 import {
   articlesActions,
@@ -15,49 +16,39 @@ import {
 } from '../../store/articlesSlice';
 
 function ArticleForm({ editing }) {
-  const params = useParams();
   const history = useHistory();
   const articlePost = useSelector((state) => state.articlesReducer.articlePost);
+  const params = useParams();
+  // eslint-disable-next-line no-unused-vars
+  const [serverErrors, setServerErrors] = useState();
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      tags: [' '],
+    },
+  });
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'tags',
+  });
   const dispatch = useDispatch();
-  const [tags, setTags] = useState([{ id: uid(), value: '' }]);
 
-  function addTag() {
-    const newTag = { id: uid(), value: '' };
-    setTags([...tags, newTag]);
-  }
-
-  function deleteTag(id) {
-    const updatedTags = tags.filter((tag) => tag.id !== id);
-    setTags(updatedTags);
-  }
-
-  function handleTagChange(id, value) {
-    const updatedTags = tags.map((tag) =>
-      tag.id === id ? { ...tag, value } : tag
-    );
-    setTags(updatedTags);
-  }
   const submitHandler = (data) => {
-    const tagsArr = tags.reduce((accumulator, tag) => {
-      if (tag.value !== '') {
-        accumulator.push(tag.value);
+    try {
+      if (!editing) {
+        dispatch(createArticle(data));
+      } else {
+        dispatch(updateArticle({ updatedData: data, slug: params.slug }));
       }
-      return accumulator;
-    }, []);
-    if (!editing) {
-      dispatch(createArticle({ ...data, tags: tagsArr }));
-    } else {
-      dispatch(
-        updateArticle({
-          updatedData: { ...data, tags: tagsArr },
-          slug: params.slug,
-        })
-      );
+      setServerErrors({});
+    } catch (error) {
+      if (error.response && error.response.data) {
+        setServerErrors(error.response.errors);
+      }
     }
   };
   useEffect(() => {
@@ -111,7 +102,7 @@ function ArticleForm({ editing }) {
             id="text"
             name="text"
             className={
-              errors.description
+              errors.text
                 ? 'main__new-article-text new-article-input--invalid'
                 : 'main__new-article-text new-article-input'
             }
@@ -120,20 +111,18 @@ function ArticleForm({ editing }) {
           />
         </label>
         <div className="main__new-article-tags-column">
-          {tags.map((item) => (
-            <div className="main__new-article-tag" key={item.id}>
+          {fields.map((item, index) => (
+            <div className="main__new-article-tag" key={uid()}>
               <input
                 className="main__new-article-tag-input new-article-input"
                 placeholder="Tag"
-                name={`tags[${item.id}]`}
-                value={item.value}
-                onChange={(e) => handleTagChange(item.id, e.target.value)}
+                {...register(`tags.${index}`)}
               />
-              {tags.length > 1 && (
+              {fields.length > 1 && (
                 <button
                   type="button"
                   className="main__new-article-tag-delete"
-                  onClick={() => deleteTag(item.id)}
+                  onClick={() => remove(index)}
                 >
                   Delete
                 </button>
@@ -141,7 +130,7 @@ function ArticleForm({ editing }) {
               <button
                 type="button"
                 className="main__new-article-tag-add"
-                onClick={addTag}
+                onClick={() => append('')}
               >
                 Add tag
               </button>
@@ -154,6 +143,13 @@ function ArticleForm({ editing }) {
           value="Send"
         />
       </form>
+      {serverErrors && (
+        <Alert
+          message="Error"
+          description="Server responsed with error"
+          type="error"
+        />
+      )}
     </section>
   );
 }

@@ -1,14 +1,18 @@
 /* eslint-disable react-redux/useSelector-prefer-selectors */
 /* eslint-disable react/no-children-prop */
-import React from 'react';
+import React, { useState } from 'react';
 import format from 'date-fns/format';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import classNames from 'classnames';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { Popconfirm } from 'antd';
+import { uid } from 'uid';
 
 import './ArticleItem.scss';
+import { deleteArticle } from '../../../store/articlesSlice';
+import { likeUnlikePost } from '../../../store/uiSlice';
 
 function ArticleItem({
   title,
@@ -19,9 +23,14 @@ function ArticleItem({
   createdAt,
   slug,
   detailed,
+  favorited,
   body,
 }) {
   const user = useSelector((state) => state.authReducer.loggedPerson);
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const [liked, setLiked] = useState(favorited);
+  const [count, setCount] = useState(favoritesCount);
   const classnamesArticle = classNames('article', {
     articles__article: !detailed,
     main__article: detailed,
@@ -32,11 +41,28 @@ function ArticleItem({
   const classnamesDescription = classNames('article__description', {
     'article__description--detailed': detailed,
   });
+
   const tags = tagList.map((tag) => (
-    <div className={classnamesTag} key={tag}>
+    <div className={classnamesTag} key={uid()}>
       {tag}
     </div>
   ));
+
+  const deleteHandler = () => {
+    dispatch(deleteArticle(slug));
+    history.replace('/articles');
+  };
+  const likeHandler = () => {
+    if (!liked) {
+      dispatch(likeUnlikePost({ slug, isLiked: false }));
+      setCount(count + 1);
+    }
+    if (liked) {
+      dispatch(likeUnlikePost({ slug, isLiked: true }));
+      setCount(count - 1);
+    }
+    setLiked(!liked);
+  };
   const cutDescription = (desc) => {
     if (desc.length < 221) {
       return desc;
@@ -54,7 +80,13 @@ function ArticleItem({
             <Link className="article__title" to={`/articles/${slug}`}>
               {title}
             </Link>
-            <div className="article__like">{favoritesCount}</div>
+            <button
+              type="button"
+              className={liked ? 'article__like' : 'article__like--unliked'}
+              onClick={() => likeHandler()}
+            >
+              {count}
+            </button>
           </div>
           <div className="article__tags"> {tags}</div>
           <div className={classnamesDescription}>
@@ -75,23 +107,34 @@ function ArticleItem({
               alt="avatar"
             />
           </div>
-          {detailed && author.username === user.username && (
-            <div className="article__functional">
-              <button
-                className="header__delete-button header-button"
-                type="button"
-              >
-                Delete
-              </button>
-              <Link
-                to={`/articles/${slug}/edit`}
-                className="header__edit-button header-button"
-                type="button"
-              >
-                Edit
-              </Link>
-            </div>
-          )}
+          {user
+            ? detailed &&
+              author.username === user.username && (
+                <div className="article__functional">
+                  <Popconfirm
+                    title="Delete the article"
+                    description="Are you sure to delete this article?"
+                    onConfirm={deleteHandler}
+                    okText="Yes"
+                    cancelText="No"
+                  >
+                    <button
+                      className="header__delete-button header-button"
+                      type="button"
+                    >
+                      Delete
+                    </button>
+                  </Popconfirm>
+                  <Link
+                    to={`/articles/${slug}/edit`}
+                    className="header__edit-button header-button"
+                    type="button"
+                  >
+                    Edit
+                  </Link>
+                </div>
+              )
+            : null}
         </div>
       </div>
       <ReactMarkdown className="article__body" remarkPlugins={[remarkGfm]}>

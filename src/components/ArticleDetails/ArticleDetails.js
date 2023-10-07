@@ -1,8 +1,9 @@
 /* eslint-disable react-redux/useSelector-prefer-selectors */
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { Spin } from 'antd';
 
 import ArticleItem from '../ArticleList/ArticleItem/ArticleItem';
 
@@ -14,25 +15,31 @@ function ArticleDetails() {
   const loggedPerson = useSelector((state) => state.authReducer.loggedPerson);
 
   const [currentArticle, setCurrentArticle] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const getArticle = async (slug) => {
-    let config;
-    if (loggedPerson) {
-      config = {
-        headers: {
-          Authorization: `Bearer ${loggedPerson.token}`,
-        },
-      };
-    }
-    try {
-      const response = await axios.get(`/articles/${slug}`, config);
-      const result = response.data.article;
-      setCurrentArticle(result);
-    } catch (error) {
-      throw new Error(error.message);
-    }
-  };
+  const getArticle = useCallback(
+    async (slug) => {
+      setLoading(true);
+      let config;
+      if (loggedPerson) {
+        config = {
+          headers: {
+            Authorization: `Bearer ${loggedPerson.token}`,
+          },
+        };
+      }
+      try {
+        const response = await axios.get(`/articles/${slug}`, config);
+        const result = response.data.article;
+        setCurrentArticle(result);
+      } catch (error) {
+        throw new Error(error.message);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [loggedPerson]
+  );
   useEffect(() => {
     const fetchFunc = () => {
       getArticle(params.slug);
@@ -40,7 +47,7 @@ function ArticleDetails() {
     fetchFunc();
   }, [getArticle, params.slug]);
 
-  if (currentArticle) {
+  if (currentArticle && !loading) {
     return (
       <ArticleItem
         title={currentArticle.title}
@@ -51,9 +58,13 @@ function ArticleDetails() {
         createdAt={currentArticle.createdAt}
         slug={currentArticle.slug}
         body={currentArticle.body}
+        favorited={currentArticle.favorited}
         detailed
       />
     );
+  }
+  if (loading) {
+    return <Spin style={{ marginTop: '20vh' }} size="large" />;
   }
 }
 

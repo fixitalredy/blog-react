@@ -1,3 +1,4 @@
+/* eslint-disable react-redux/useSelector-prefer-selectors */
 import { Route, Switch, Redirect } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -17,7 +18,6 @@ import './Blog.scss';
 
 function Blog() {
   const dispatch = useDispatch();
-  // eslint-disable-next-line react-redux/useSelector-prefer-selectors
   const articlePost = useSelector((state) => state.articlesReducer.articlePost);
   useEffect(() => {
     if (localStorage.user) {

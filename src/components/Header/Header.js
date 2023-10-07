@@ -4,6 +4,7 @@ import { NavLink } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { authActions } from '../../store/authSlice';
+import { fetchArticles } from '../../store/articlesSlice';
 
 function ArticleList() {
   const isLoggedSelector = (state) => state.authReducer.isLogged;
@@ -14,6 +15,7 @@ function ArticleList() {
 
   const logoutHandler = () => {
     dispatch(authActions.setLogged(false));
+    dispatch(fetchArticles());
     localStorage.removeItem('user');
   };
   return (
@@ -35,7 +37,11 @@ function ArticleList() {
               <div className="article__name name">{loggedPerson.username}</div>
               <img
                 className="article__avatar avatar"
-                src={loggedPerson.image}
+                src={
+                  loggedPerson.image === ''
+                    ? 'https://static.productionready.io/images/smiley-cyrus.jpg'
+                    : loggedPerson.image
+                }
                 width="50"
                 height="50"
                 alt="avatar"

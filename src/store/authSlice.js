@@ -1,9 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-axios.defaults.baseURL = 'https://api.realworld.io/api';
-axios.defaults.headers['Content-Type'] = 'application/json';
-
 export const registerAuth = createAsyncThunk(
   'auth/register',
   async (registerData) => {
@@ -39,34 +36,21 @@ export const loginAuth = createAsyncThunk(
   }
 );
 
-export const edit = createAsyncThunk(
-  'auth/edit',
-  async (editData, { getState }) => {
-    const tokend = getState().authReducer.loggedPerson.token;
-    try {
-      const response = await axios.put(
-        '/user',
-        {
-          user: {
-            email: editData.email,
-            username: editData.username,
-            password: editData.password,
-            image: editData.avatar,
-          },
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${tokend}`,
-          },
-        }
-      );
-      console.log(response.data.user);
-      return response.data.user;
-    } catch (err) {
-      throw err.response.data;
-    }
+export const edit = createAsyncThunk('auth/edit', async (editData) => {
+  try {
+    const response = await axios.put('/user', {
+      user: {
+        email: editData.email,
+        username: editData.username,
+        password: editData.password,
+        image: editData.avatar,
+      },
+    });
+    return response.data.user;
+  } catch (err) {
+    throw err.response.data;
   }
-);
+});
 
 const initialState = {
   isLogged: false,
@@ -88,12 +72,18 @@ const authSlice = createSlice({
     builder
       .addCase(loginAuth.fulfilled, (state, action) => {
         state.isLogged = true;
-        state.loggedPerson = action.payload;
+        if (!action.payload.image) {
+          action.payload.image =
+            'https://static.productionready.io/images/smiley-cyrus.jpg';
+        }
         localStorage.user = JSON.stringify(action.payload);
       })
       .addCase(registerAuth.fulfilled, (state, action) => {
         state.isLogged = true;
-        state.loggedPerson = action.payload;
+        state.loggedPerson = {
+          ...action.payload,
+          image: 'https://static.productionready.io/images/smiley-cyrus.jpg',
+        };
         localStorage.user = JSON.stringify(action.payload);
       })
       .addCase(loginAuth.rejected, (state) => {

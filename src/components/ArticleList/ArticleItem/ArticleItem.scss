@@ -50,15 +50,38 @@
     justify-content: start;
     width: calc(20% - 10px);
     height: 20px;
+    border: none;
+    background-color: white;
     padding-top: 3px;
     color: rgba($color: #000000, $alpha: 0.75);
-    font-size: 12px;
+    font-size: 17px;
     &::before {
-      content: url('./Vector.png');
+      content: url('./path4.png');
       display: inline-block;
       width: 16px;
       height: 16px;
       margin-right: 5px;
+    }
+
+    &--unliked {
+      display: inline-flex;
+      align-items: center;
+      justify-content: start;
+      width: calc(20% - 10px);
+      height: 20px;
+      border: none;
+      background-color: white;
+      padding-top: 3px;
+      color: rgba($color: #000000, $alpha: 0.75);
+      font-size: 17px;
+      &::before {
+        content: url('./Vector.png');
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        margin-right: 5px;
+      }
+  
     }
   }
   &__tag {
@@ -85,7 +108,7 @@
   &__right-column {
     display: flex;
     flex-direction: column;
-    gap:30px;
+    gap: 30px;
   }
   &__profile-info {
     display: flex;
@@ -126,24 +149,27 @@
 }
 .header {
   &__edit-button {
-    border: 1px solid #52C41A;
-    color:#52C41A;
+    border: 1px solid #52c41a;
+    color: #52c41a;
     border-radius: 10px;
-    width:max-content;
-    width:65px;
+    width: max-content;
+    width: 65px;
     padding: 10px;
     text-align: center;
   }
   &__delete-button {
-    border: 1px solid #F5222D;
-    color:#F5222D;
+    border: 1px solid #f5222d;
+    cursor: pointer;
+    background-color: white;
+    color: #f5222d;
     border-radius: 10px;
-    width:max-content;
-    width:78px;
+    width: max-content;
+    width: 78px;
     padding: 10px;
     text-align: center;
   }
 }
 .header-button {
   text-decoration: none;
+  text-align: center;
 }

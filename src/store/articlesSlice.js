@@ -2,20 +2,16 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-axios.defaults.baseURL = 'https://api.realworld.io/api';
-
+axios.defaults.baseURL = 'https://blog.kata.academy/api/';
+if (localStorage.user) {
+  axios.defaults.headers = {
+    Authorization: `Bearer ${JSON.parse(localStorage.user).token}`,
+  };
+}
 export const fetchArticles = createAsyncThunk(
   'articles/fetchArticles',
-  async (page = 1, { rejectWithValue, getState }) => {
-    const user = getState().authReducer.loggedPerson;
+  async (page = 1, { rejectWithValue }) => {
     let config;
-    if (user) {
-      config = {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      };
-    }
     try {
       const response = await axios.get(
         `/articles/?limit=5&offset=${page * 5 - 5}`,
@@ -30,27 +26,17 @@ export const fetchArticles = createAsyncThunk(
   }
 );
 export const createArticle = createAsyncThunk(
-  'articles/createArticles',
-  async (creationData, { rejectWithValue, getState }) => {
-    const user = getState().authReducer.loggedPerson;
-    const config = {
-      headers: {
-        Authorization: `Bearer ${user.token}`,
-      },
-    };
+  'articles/createArticle',
+  async (creationData, { rejectWithValue }) => {
     try {
-      const response = await axios.post(
-        '/articles/',
-        {
-          article: {
-            title: creationData.title,
-            body: creationData.text,
-            description: creationData.description,
-            tagList: creationData.tags,
-          },
+      const response = await axios.post('/articles/', {
+        article: {
+          title: creationData.title,
+          body: creationData.text,
+          description: creationData.description,
+          tagList: creationData.tags,
         },
-        config
-      );
+      });
       const result = response.data;
       return result;
     } catch (error) {
@@ -61,28 +47,30 @@ export const createArticle = createAsyncThunk(
 );
 export const updateArticle = createAsyncThunk(
   'articles/updateArticle',
-  async ({ updatedData, slug }, { rejectWithValue, getState }) => {
-    const user = getState().authReducer.loggedPerson;
-    const config = {
-      headers: {
-        Authorization: `Bearer ${user.token}`,
-      },
-    };
+  async ({ updatedData, slug }, { rejectWithValue }) => {
     try {
-      const response = await axios.put(
-        `/articles/${slug}`,
-        {
-          article: {
-            title: updatedData.title,
-            body: updatedData.text,
-            description: updatedData.description,
-            tagList: updatedData.tags,
-          },
+      const response = await axios.put(`/articles/${slug}`, {
+        article: {
+          title: updatedData.title,
+          body: updatedData.text,
+          description: updatedData.description,
+          tagList: updatedData.tags,
         },
-        config
-      );
+      });
       const result = response.data;
-      console.log(result);
+      return result;
+    } catch (error) {
+      rejectWithValue(error);
+    }
+    return null;
+  }
+);
+export const deleteArticle = createAsyncThunk(
+  'articles/deleteArticle',
+  async (slug, { rejectWithValue }) => {
+    try {
+      const response = await axios.delete(`/articles/${slug}`);
+      const result = response.data;
       return result;
     } catch (error) {
       rejectWithValue(error);
@@ -105,6 +93,14 @@ const articlesSlice = createSlice({
     resetArticlePost: (state) => {
       state.articlePost = null;
     },
+    setLikedPost: (state, action) => {
+      state.articles = state.articles.map((article) => {
+        if (article.slug === action.payload.slug) {
+          return action.payload;
+        }
+        return article;
+      });
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -123,6 +119,15 @@ const articlesSlice = createSlice({
         state.articlePost = 'rejected';
       })
       .addCase(updateArticle.fulfilled, (state) => {
+        state.articlePost = 'resolved';
+      })
+      .addCase(createArticle.fulfilled, (state) => {
+        state.articlePost = 'resolved';
+      })
+      .addCase(deleteArticle.rejected, (state) => {
+        state.articlePost = 'rejected';
+      })
+      .addCase(deleteArticle.fulfilled, (state) => {
         state.articlePost = 'resolved';
       });
   },
