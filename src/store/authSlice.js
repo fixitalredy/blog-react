@@ -86,10 +86,9 @@ const authSlice = createSlice({
       })
       .addCase(registerAuth.fulfilled, (state, action) => {
         state.isLogged = true;
-        state.loggedPerson = {
-          ...action.payload,
-          image: 'https://static.productionready.io/images/smiley-cyrus.jpg',
-        };
+        state.loggedPerson = action.payload;
+        action.payload.image =
+          'https://static.productionready.io/images/smiley-cyrus.jpg';
         localStorage.user = JSON.stringify(action.payload);
         state.logStatus = 'resolved';
       })
