@@ -1,10 +1,12 @@
+/* eslint-disable react-redux/useSelector-prefer-selectors */
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavLink, useHistory } from 'react-router-dom';
 import './SignForms.scss';
 import { useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { Alert } from 'antd';
 
 import { registerAuth } from '../../store/authSlice';
 
@@ -15,17 +17,27 @@ function SignUp() {
     formState: { errors },
     getValues,
   } = useForm({});
+  const logStatus = useSelector((state) => state.authReducer.logStatus);
 
+  const [error, setError] = useState(false);
   const dispatch = useDispatch();
   const history = useHistory();
 
   const submitHandler = (data) => {
     dispatch(registerAuth(data));
-    history.replace('/articles');
   };
 
   const regEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/i;
 
+  useEffect(() => {
+    if (!logStatus) {
+      setError(true);
+    }
+    if (logStatus === 'resolved') {
+      history.replace('/articles');
+      setError(false);
+    }
+  }, [dispatch, history, logStatus]);
   return (
     <div className="main__sign-container">
       <h2 className="main__sign-title">Create new account</h2>
@@ -154,6 +166,14 @@ function SignUp() {
           </NavLink>
           .
         </p>
+        {error && (
+          <Alert
+            style={{ marginTop: '20px' }}
+            type="error"
+            message="Registration error"
+            description="Unprocessable Content"
+          />
+        )}
       </form>
     </div>
   );
