@@ -32,6 +32,7 @@ function ArticleDetails() {
         const response = await axios.get(`/articles/${slug}`, config);
         const result = response.data.article;
         setCurrentArticle(result);
+        console.log(result);
       } catch (error) {
         throw new Error(error.message);
       } finally {
@@ -43,6 +44,7 @@ function ArticleDetails() {
   useEffect(() => {
     const fetchFunc = () => {
       getArticle(params.slug);
+      console.log(params.slug);
     };
     fetchFunc();
   }, [getArticle, params.slug]);
