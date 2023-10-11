@@ -1,4 +1,44 @@
 /* eslint-disable react-redux/useSelector-prefer-selectors */
+import React from 'react';
+
+import ArticleItem from '../ArticleList/ArticleItem/ArticleItem';
+
+const currentArticle = {
+  title: 'fdsfdd',
+  description: 'dsddd',
+  favoritesCount: '23',
+  favorited: false,
+  tagList: ['1', '2'],
+  author: {
+    username: 'jake',
+    bio: 'I work at State Farm.',
+    image: 'https://api.realworld.io/images/smiley-cyrus.jpg',
+    following: false,
+  },
+  createdAt: new Date(),
+  slug: 'fsddsfsdfsdf',
+  body: 'dddddddddddddddddd',
+};
+
+function ArticleDetails() {
+  return (
+    <ArticleItem
+      title={currentArticle.title}
+      description={currentArticle.description}
+      favoritesCount={currentArticle.favoritesCount}
+      tagList={currentArticle.tagList}
+      author={currentArticle.author}
+      createdAt={currentArticle.createdAt}
+      slug={currentArticle.slug}
+      body={currentArticle.body}
+      favorited={currentArticle.favorited}
+      detailed
+    />
+  );
+}
+
+export default ArticleDetails;
+/*
 import React, { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
@@ -70,4 +110,4 @@ function ArticleDetails() {
   }
 }
 
-export default ArticleDetails;
+export default ArticleDetails; */
