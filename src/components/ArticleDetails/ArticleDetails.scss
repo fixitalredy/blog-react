@@ -1,6 +1,7 @@
 .main {
   &__article {
     margin-top: 26px;
-    height: 807px;
+    min-height: 807px;
+    height: max-content;
   }
 }

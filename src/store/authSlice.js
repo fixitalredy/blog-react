@@ -55,6 +55,7 @@ export const edit = createAsyncThunk('auth/edit', async (editData) => {
 const initialState = {
   isLogged: false,
   loggedPerson: null,
+  logStatus: null,
 };
 
 const authSlice = createSlice({
@@ -67,6 +68,9 @@ const authSlice = createSlice({
         state.loggedPerson = JSON.parse(localStorage.user);
       } else state.loggedPerson = null;
     },
+    resetLogStatus: (state) => {
+      state.logStatus = false;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -76,7 +80,9 @@ const authSlice = createSlice({
           action.payload.image =
             'https://static.productionready.io/images/smiley-cyrus.jpg';
         }
+        state.loggedPerson = action.payload;
         localStorage.user = JSON.stringify(action.payload);
+        state.logStatus = 'resolved';
       })
       .addCase(registerAuth.fulfilled, (state, action) => {
         state.isLogged = true;
@@ -85,6 +91,7 @@ const authSlice = createSlice({
           image: 'https://static.productionready.io/images/smiley-cyrus.jpg',
         };
         localStorage.user = JSON.stringify(action.payload);
+        state.logStatus = 'resolved';
       })
       .addCase(loginAuth.rejected, (state) => {
         state.logStatus = 'rejected';

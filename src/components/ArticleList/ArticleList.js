@@ -5,7 +5,6 @@ import { uid } from 'uid';
 import { Spin } from 'antd';
 
 import './ArticleList.scss';
-import ArticlesPagination from '../ArticlesPagination/ArticlesPagination';
 
 import ArticleItem from './ArticleItem/ArticleItem';
 
@@ -27,16 +26,12 @@ function ArticleList() {
       detailed={false}
     />
   ));
-
   return (
     <article className="articles">
       {status === 'loading' ? (
         <Spin style={{ marginTop: '20vh' }} size="large" />
       ) : (
-        <>
-          {articlesList}
-          <ArticlesPagination />
-        </>
+        articlesList
       )}
     </article>
   );

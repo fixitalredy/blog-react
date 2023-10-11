@@ -19,6 +19,7 @@ import './Blog.scss';
 function Blog() {
   const dispatch = useDispatch();
   const articlePost = useSelector((state) => state.articlesReducer.articlePost);
+  const isLogged = useSelector((state) => state.authReducer.isLogged);
   useEffect(() => {
     if (localStorage.user) {
       dispatch(authActions.setLogged(true));
@@ -27,7 +28,7 @@ function Blog() {
       dispatch(authActions.setLogged(false));
       dispatch(fetchArticles());
     }
-  }, [dispatch, articlePost]);
+  }, [dispatch, articlePost, isLogged]);
 
   return (
     <div className="Blog">

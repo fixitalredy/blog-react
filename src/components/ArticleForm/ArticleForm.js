@@ -6,7 +6,7 @@ import { uid } from 'uid';
 import './newArticle.scss';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom/cjs/react-router-dom.min';
+import { useParams, Redirect } from 'react-router-dom/cjs/react-router-dom';
 import { Alert } from 'antd';
 
 import {
@@ -15,12 +15,13 @@ import {
   updateArticle,
 } from '../../store/articlesSlice';
 
-function ArticleForm({ editing }) {
+function ArticleForm({ editing, article }) {
   const history = useHistory();
   const articlePost = useSelector((state) => state.articlesReducer.articlePost);
   const params = useParams();
   // eslint-disable-next-line no-unused-vars
   const [serverErrors, setServerErrors] = useState();
+  const isLogged = useSelector((state) => state.authReducer.isLogged);
   const {
     register,
     handleSubmit,
@@ -28,7 +29,7 @@ function ArticleForm({ editing }) {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      tags: [' '],
+      tags: editing ? article.tagList : [' '],
     },
   });
   const { fields, append, remove } = useFieldArray({
@@ -42,9 +43,14 @@ function ArticleForm({ editing }) {
       if (!editing) {
         dispatch(createArticle(data));
       } else {
-        dispatch(updateArticle({ updatedData: data, slug: params.slug }));
+        dispatch(
+          updateArticle({
+            updatedData: data,
+            slug: params.slug,
+          })
+        );
       }
-      setServerErrors({});
+      setServerErrors(null);
     } catch (error) {
       if (error.response && error.response.data) {
         setServerErrors(error.response.errors);
@@ -57,6 +63,10 @@ function ArticleForm({ editing }) {
       dispatch(articlesActions.resetArticlePost());
     }
   }, [articlePost, dispatch, history]);
+
+  if (editing && !isLogged) {
+    return <Redirect to="/sign-in" />;
+  }
   return (
     <section className="main__new-article article">
       <div className="main__new-article-header">
@@ -79,6 +89,7 @@ function ArticleForm({ editing }) {
                 : 'main__new-article-title new-article-input'
             }
             placeholder="Title"
+            defaultValue={editing ? article.title : ''}
             {...register('title', { required: true })}
           />
         </label>
@@ -92,6 +103,7 @@ function ArticleForm({ editing }) {
                 ? 'main__new-article-description new-article-input--invalid'
                 : 'main__new-article-description new-article-input'
             }
+            defaultValue={editing ? article.description : ''}
             placeholder="Short Description"
             {...register('description', { required: true })}
           />
@@ -106,6 +118,7 @@ function ArticleForm({ editing }) {
                 ? 'main__new-article-text new-article-input--invalid'
                 : 'main__new-article-text new-article-input'
             }
+            defaultValue={editing ? article.body : ''}
             placeholder="Text"
             {...register('text', { required: true })}
           />

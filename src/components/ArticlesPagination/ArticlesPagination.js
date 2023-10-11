@@ -12,9 +12,10 @@ function ArticlesPagination() {
   return (
     <Pagination
       defaultCurrent={1}
-      total={50}
+      total={100}
       style={{ marginTop: '40px' }}
       onChange={pageHandler}
+      showSizeChanger={false}
     />
   );
 }

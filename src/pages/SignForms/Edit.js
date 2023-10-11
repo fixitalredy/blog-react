@@ -1,14 +1,17 @@
+/* eslint-disable react-redux/useSelector-prefer-selectors */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import './SignForms.scss';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { Redirect } from 'react-router-dom/cjs/react-router-dom';
 
 import { edit } from '../../store/authSlice';
 
 function Edit() {
   const dispatch = useDispatch();
+  const isLogged = useSelector((state) => state.authReducer.isLogged);
 
   const {
     register,
@@ -24,7 +27,9 @@ function Edit() {
     dispatch(edit(data));
   };
   const regEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/i;
-
+  if (!isLogged) {
+    return <Redirect to="/sign-in" />;
+  }
   return (
     <div className="main__sign-container">
       <h2 className="main__sign-title">Edit Profile</h2>

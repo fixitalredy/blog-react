@@ -31,6 +31,11 @@ function ArticleItem({
   const history = useHistory();
   const [liked, setLiked] = useState(favorited);
   const [count, setCount] = useState(favoritesCount);
+
+  const filteredTagList = tagList.filter(
+    (tag) => tag.length !== 0 && tag !== ' '
+  );
+
   const classnamesArticle = classNames('article', {
     articles__article: !detailed,
     main__article: detailed,
@@ -42,7 +47,7 @@ function ArticleItem({
     'article__description--detailed': detailed,
   });
 
-  const tags = tagList.map((tag) => (
+  const tags = filteredTagList.map((tag) => (
     <div className={classnamesTag} key={uid()}>
       {tag}
     </div>

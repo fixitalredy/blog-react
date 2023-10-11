@@ -1,12 +1,14 @@
+/* eslint-disable react-redux/useSelector-prefer-selectors */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink, useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { Alert } from 'antd';
 
-import { loginAuth } from '../../store/authSlice';
+import { authActions, loginAuth } from '../../store/authSlice';
 import './SignForms.scss';
 
 function SignIn() {
@@ -15,14 +17,25 @@ function SignIn() {
     handleSubmit,
     formState: { errors },
   } = useForm();
+  const [error, setError] = useState(false);
   const dispatch = useDispatch();
+  const logStatus = useSelector((state) => state.authReducer.logStatus);
   const regEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/i;
   const history = useHistory();
 
   const submitHandler = (data) => {
     dispatch(loginAuth(data));
-    history.replace('/articles');
   };
+  useEffect(() => {
+    if (logStatus === 'rejected') {
+      setError(true);
+    }
+    if (logStatus === 'resolved') {
+      setError(false);
+      history.replace('/articles');
+      dispatch(authActions.resetLogStatus());
+    }
+  }, [dispatch, history, logStatus]);
   return (
     <div className="main__sign-container">
       <h2 className="main__sign-title">Sign In</h2>
@@ -79,6 +92,14 @@ function SignIn() {
           </NavLink>
           .
         </p>
+        {error && (
+          <Alert
+            style={{ marginTop: '20px' }}
+            type="error"
+            message="Authentication error"
+            description="Password or email is incorrect"
+          />
+        )}
       </form>
     </div>
   );
