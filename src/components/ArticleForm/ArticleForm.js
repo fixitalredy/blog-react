@@ -6,7 +6,7 @@ import { uid } from 'uid';
 import './newArticle.scss';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams, Redirect } from 'react-router-dom/cjs/react-router-dom';
+import { useParams } from 'react-router-dom/cjs/react-router-dom';
 import { Alert } from 'antd';
 
 import {
@@ -21,7 +21,6 @@ function ArticleForm({ editing, article }) {
   const params = useParams();
   // eslint-disable-next-line no-unused-vars
   const [serverErrors, setServerErrors] = useState();
-  const isLogged = useSelector((state) => state.authReducer.isLogged);
   const {
     register,
     handleSubmit,
@@ -64,9 +63,6 @@ function ArticleForm({ editing, article }) {
     }
   }, [articlePost, dispatch, history]);
 
-  if (editing && !isLogged) {
-    return <Redirect to="/sign-in" />;
-  }
   return (
     <section className="main__new-article article">
       <div className="main__new-article-header">

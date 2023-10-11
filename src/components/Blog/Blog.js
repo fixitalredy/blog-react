@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable react-redux/useSelector-prefer-selectors */
 import { Route, Switch, Redirect } from 'react-router-dom';
 import { useEffect } from 'react';
@@ -41,9 +42,22 @@ function Blog() {
             <Route path="/articles/:slug" exact component={Article} />
             <Route path="/sign-up" component={SignUp} />
             <Route path="/sign-in" component={SignIn} />
-            <Route path="/profile" component={Edit} />
-            <Route path="/new-article" component={CreateArticle} />
-            <Route path="/articles/:slug/edit" component={EditArticle} />
+            <Route
+              path="/profile"
+              component={isLogged ? Edit : () => <Redirect to="/sign-in" />}
+            />
+            <Route
+              path="/new-article"
+              component={
+                isLogged ? CreateArticle : () => <Redirect to="/sign-in" />
+              }
+            />
+            <Route
+              path="/articles/:slug/edit"
+              component={
+                isLogged ? EditArticle : () => <Redirect to="/sign-in" />
+              }
+            />
           </Switch>
         </div>
       </main>
