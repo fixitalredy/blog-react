@@ -27,6 +27,7 @@ function ArticleItem({
   body,
 }) {
   const user = useSelector((state) => state.authReducer.loggedPerson);
+  const isLogged = useSelector((state) => state.authReducer.isLogged);
   const dispatch = useDispatch();
   const history = useHistory();
   const [liked, setLiked] = useState(favorited);
@@ -58,15 +59,17 @@ function ArticleItem({
     history.replace('/articles');
   };
   const likeHandler = () => {
-    if (!liked) {
-      dispatch(likeUnlikePost({ slug, isLiked: false }));
-      setCount(count + 1);
+    if (isLogged) {
+      if (!liked) {
+        dispatch(likeUnlikePost({ slug, isLiked: false }));
+        setCount(count + 1);
+      }
+      if (liked) {
+        dispatch(likeUnlikePost({ slug, isLiked: true }));
+        setCount(count - 1);
+      }
+      setLiked(!liked);
     }
-    if (liked) {
-      dispatch(likeUnlikePost({ slug, isLiked: true }));
-      setCount(count - 1);
-    }
-    setLiked(!liked);
   };
   const cutDescription = (desc) => {
     if (desc.length < 221) {
