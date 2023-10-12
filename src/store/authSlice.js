@@ -92,6 +92,9 @@ const authSlice = createSlice({
         localStorage.user = JSON.stringify(action.payload);
         state.logStatus = 'resolved';
       })
+      .addCase(registerAuth.rejected, (state) => {
+        state.logStatus = 'rejected';
+      })
       .addCase(loginAuth.rejected, (state) => {
         state.logStatus = 'rejected';
       })
