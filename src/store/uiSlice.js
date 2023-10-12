@@ -5,7 +5,9 @@ import axios from 'axios';
 import { articlesActions } from './articlesSlice';
 
 axios.defaults.baseURL = 'https://blog.kata.academy/api';
-axios.defaults.headers['Content-Type'] = 'application/json';
+axios.defaults.headers = {
+  Authorization: `Bearer ${JSON.parse(localStorage.user).token}`,
+};
 
 export const likeUnlikePost = createAsyncThunk(
   'ui/likeOrUnlike',

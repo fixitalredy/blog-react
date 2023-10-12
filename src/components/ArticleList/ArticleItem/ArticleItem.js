@@ -134,7 +134,7 @@ function ArticleItem({
                     </button>
                   </Popconfirm>
                   <Link
-                    to={`/${slug}/edit`}
+                    to={`/articles/${slug}/edit`}
                     className="header__edit-button header-button"
                     type="button"
                   >
