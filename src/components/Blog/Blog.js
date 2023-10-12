@@ -38,8 +38,8 @@ function Blog() {
         <div className="main__content">
           <Switch>
             <Route path="/" exact render={() => <Redirect to="/articles" />} />
+            <Route path="/articles/:slug" exact component={Article} />
             <Route path="/articles" exact component={Main} />
-            <Route path="/:slug" exact component={Article} />
             <Route path="/sign-up" component={SignUp} />
             <Route path="/sign-in" component={SignIn} />
             <Route

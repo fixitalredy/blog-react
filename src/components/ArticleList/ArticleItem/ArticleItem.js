@@ -85,7 +85,7 @@ function ArticleItem({
       <div className="article__header">
         <div className="article__meta">
           <div className="article__subheader">
-            <Link className="article__title" to={`/${slug}`}>
+            <Link className="article__title" to={`/articles/${slug}`}>
               {title}
             </Link>
             <button
