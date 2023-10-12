@@ -39,23 +39,30 @@ function Blog() {
           <Switch>
             <Route path="/" exact render={() => <Redirect to="/articles" />} />
             <Route path="/articles" exact component={Main} />
-            <Route path="/articles/:slug" component={Article} />
+            <Route path="/articles/:slug" exact component={Article} />
             <Route path="/sign-up" component={SignUp} />
             <Route path="/sign-in" component={SignIn} />
             <Route
               path="/profile"
-              component={isLogged ? Edit : () => <Redirect to="/sign-in" />}
+              component={
+                localStorage.user ? Edit : () => <Redirect to="/sign-in" />
+              }
             />
             <Route
               path="/new-article"
               component={
-                isLogged ? CreateArticle : () => <Redirect to="/sign-in" />
+                localStorage.user
+                  ? CreateArticle
+                  : () => <Redirect to="/sign-in" />
               }
             />
             <Route
               path="/articles/:slug/edit"
+              exact
               component={
-                isLogged ? EditArticle : () => <Redirect to="/sign-in" />
+                localStorage.user
+                  ? EditArticle
+                  : () => <Redirect to="/sign-in" />
               }
             />
           </Switch>
