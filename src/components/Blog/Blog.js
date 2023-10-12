@@ -1,4 +1,3 @@
-/* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable react-redux/useSelector-prefer-selectors */
 import { Route, Switch, Redirect } from 'react-router-dom';
 import { useEffect } from 'react';
@@ -14,13 +13,13 @@ import { authActions } from '../../store/authSlice';
 import { fetchArticles } from '../../store/articlesSlice';
 import CreateArticle from '../../pages/Article/CreateArticle';
 import EditArticle from '../../pages/Article/EditArticle';
-
 import './Blog.scss';
 
 function Blog() {
   const dispatch = useDispatch();
   const articlePost = useSelector((state) => state.articlesReducer.articlePost);
   const isLogged = useSelector((state) => state.authReducer.isLogged);
+
   useEffect(() => {
     if (localStorage.user) {
       dispatch(authActions.setLogged(true));
@@ -41,29 +40,34 @@ function Blog() {
             <Route path="/articles/:slug" exact component={Article} />
             <Route path="/articles" exact component={Main} />
             <Route path="/sign-up" component={SignUp} />
-            <Route path="/sign-in">
-              {localStorage.user ? (
-                () => <Redirect to="/articles" />
-              ) : (
-                <SignIn />
-              )}
-            </Route>
-            <Route path="/profile">
-              {localStorage.user ? Edit : <Redirect to="/sign-in" />}
-            </Route>
             <Route
-              path="/new-article"
-              component={
-                localStorage.user
-                  ? CreateArticle
-                  : () => <Redirect to="/sign-in" />
+              path="/sign-in"
+              render={() =>
+                isLogged ? <Redirect to="/articles" /> : <SignIn />
               }
             />
-            <Route path="/articles/:slug/edit" exact>
-              {localStorage.user
-                ? EditArticle
-                : () => <Redirect to="/sign-in" />}
-            </Route>
+            <Route
+              path="/profile"
+              render={() =>
+                localStorage.user ? <Edit /> : <Redirect to="/sign-in" />
+              }
+            />
+            <Route
+              path="/new-article"
+              render={() =>
+                localStorage.user ? (
+                  <CreateArticle />
+                ) : (
+                  <Redirect to="/sign-in" />
+                )
+              }
+            />
+            <Route
+              path="/articles/:slug/edit"
+              render={() =>
+                localStorage.user ? <EditArticle /> : <Redirect to="/sign-in" />
+              }
+            />
           </Switch>
         </div>
       </main>
