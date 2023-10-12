@@ -37,34 +37,34 @@ function Blog() {
       <main className="main">
         <div className="main__content">
           <Switch>
-            <Route path="/d" exact>
-              <Redirect to="/articles" />
-            </Route>
-            <Route path="/articles/:slug">
-              <Article />
-            </Route>
-            <Route path="/articles" exact>
-              <Main />
-            </Route>
-            <Route path="/sign-up">
-              <SignUp />
-            </Route>
-            <Route path="/sign-in">
-              <SignIn />
-            </Route>
-            <Route path="/profile">
-              {localStorage.user ? <Edit /> : <Redirect to="/sign-in" />}
-            </Route>
-            <Route path="/new-article">
-              {localStorage.user ? (
-                <CreateArticle />
-              ) : (
-                <Redirect to="/sign-in" />
-              )}
-            </Route>
-            <Route path="/articles/:slug/edit" exact>
-              {localStorage.user ? <EditArticle /> : <Redirect to="/sign-in" />}
-            </Route>
+            <Route path="/" exact render={() => <Redirect to="/articles" />} />
+            <Route path="/articles/:slug" exact component={Article} />
+            <Route path="/articles" exact component={Main} />
+            <Route path="/sign-up" component={SignUp} />
+            <Route path="/sign-in" component={SignIn} />
+            <Route
+              path="/profile"
+              component={
+                localStorage.user ? Edit : () => <Redirect to="/sign-in" />
+              }
+            />
+            <Route
+              path="/new-article"
+              component={
+                localStorage.user
+                  ? CreateArticle
+                  : () => <Redirect to="/sign-in" />
+              }
+            />
+            <Route
+              path="/articles/:slug/edit"
+              exact
+              component={
+                localStorage.user
+                  ? EditArticle
+                  : () => <Redirect to="/sign-in" />
+              }
+            />
           </Switch>
         </div>
       </main>
