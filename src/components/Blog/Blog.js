@@ -39,7 +39,7 @@ function Blog() {
           <Switch>
             <Route path="/" exact render={() => <Redirect to="/articles" />} />
             <Route path="/articles" exact component={Main} />
-            <Route path="/articles/:slug" exact component={Article} />
+            <Route path="/:slug" exact component={Article} />
             <Route path="/sign-up" component={SignUp} />
             <Route path="/sign-in" component={SignIn} />
             <Route

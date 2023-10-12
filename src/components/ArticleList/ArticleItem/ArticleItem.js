@@ -85,7 +85,7 @@ function ArticleItem({
       <div className="article__header">
         <div className="article__meta">
           <div className="article__subheader">
-            <Link className="article__title" to={`/articles/${slug}`}>
+            <Link className="article__title" to={`/${slug}`}>
               {title}
             </Link>
             <button
@@ -134,7 +134,7 @@ function ArticleItem({
                     </button>
                   </Popconfirm>
                   <Link
-                    to={`/articles/${slug}/edit`}
+                    to={`/${slug}/edit`}
                     className="header__edit-button header-button"
                     type="button"
                   >
