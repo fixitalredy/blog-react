@@ -37,13 +37,13 @@ function Blog() {
       <main className="main">
         <div className="main__content">
           <Switch>
-            <Route path="/" exact>
-              <Redirect to="/articles/" />
+            <Route path="/d" exact>
+              <Redirect to="/articles" />
             </Route>
             <Route path="/articles/:slug">
               <Article />
             </Route>
-            <Route path="/articles/" exact>
+            <Route path="/articles" exact>
               <Main />
             </Route>
             <Route path="/sign-up">
