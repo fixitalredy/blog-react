@@ -48,12 +48,6 @@ function ArticleItem({
     'article__description--detailed': detailed,
   });
 
-  const tags = filteredTagList.map((tag) => (
-    <div className={classnamesTag} key={uid()}>
-      {tag}
-    </div>
-  ));
-
   const deleteHandler = () => {
     dispatch(deleteArticle(slug));
     history.replace('/articles');
@@ -78,7 +72,26 @@ function ArticleItem({
     const newDesc = desc.substring(0, 221);
     return `${newDesc.slice(0, newDesc.lastIndexOf(' '))}...`;
   };
+  const cutTitle = (titlee) => {
+    if (titlee.length < 40) {
+      return titlee;
+    }
+    const newTitle = titlee.substring(0, 60);
+    return `${newTitle.slice(0, newTitle.lastIndexOf(' '))}...`;
+  };
+  const cutTag = (tag) => {
+    if (tag.length < 25) {
+      return tag.toLowerCase();
+    }
+    const newTag = tag.substring(0, 25).toLowerCase();
+    return `${newTag.slice(0, newTag.lastIndexOf(' '))}...`;
+  };
   const formatedDate = format(new Date(createdAt), 'MMMM d, yyyy');
+  const tags = filteredTagList.map((tag) => (
+    <div className={classnamesTag} key={uid()}>
+      {cutTag(tag)}
+    </div>
+  ));
   // eslint-disable-next-line quotes
   return (
     <article className={classnamesArticle}>
@@ -86,7 +99,7 @@ function ArticleItem({
         <div className="article__meta">
           <div className="article__subheader">
             <Link className="article__title" to={`/articles/${slug}`}>
-              {title}
+              {cutTitle(title)}
             </Link>
             <button
               type="button"
