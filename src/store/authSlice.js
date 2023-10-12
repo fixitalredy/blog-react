@@ -1,6 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
+if (localStorage.user) {
+  axios.defaults.headers = {
+    Authorization: `Bearer ${JSON.parse(localStorage.user).token}`,
+  };
+}
 export const registerAuth = createAsyncThunk(
   'auth/register',
   async (registerData) => {

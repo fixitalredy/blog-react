@@ -41,12 +41,16 @@ function Blog() {
             <Route path="/articles/:slug" exact component={Article} />
             <Route path="/articles" exact component={Main} />
             <Route path="/sign-up" component={SignUp} />
-            <Route path="/sign-in" component={SignIn} />
+            <Route path="/sign-in">
+              {localStorage.user ? (
+                () => <Redirect to="/articles" />
+              ) : (
+                <SignIn />
+              )}
+            </Route>
             <Route
               path="/profile"
-              component={
-                localStorage.user ? Edit : () => <Redirect to="/sign-in" />
-              }
+              component={localStorage.user ? Edit : <Redirect to="/sign-in" />}
             />
             <Route
               path="/new-article"
