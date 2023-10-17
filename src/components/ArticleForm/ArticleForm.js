@@ -1,6 +1,6 @@
 /* eslint-disable react-redux/useSelector-prefer-selectors */
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { uid } from 'uid';
 import './newArticle.scss';
@@ -13,6 +13,7 @@ import {
   articlesActions,
   createArticle,
   updateArticle,
+  fetchArticles,
 } from '../../store/articlesSlice';
 
 function ArticleForm({ editing, article }) {
@@ -20,7 +21,6 @@ function ArticleForm({ editing, article }) {
   const articlePost = useSelector((state) => state.articlesReducer.articlePost);
   const params = useParams();
   // eslint-disable-next-line no-unused-vars
-  const [serverErrors, setServerErrors] = useState();
   const {
     register,
     handleSubmit,
@@ -38,31 +38,27 @@ function ArticleForm({ editing, article }) {
   const dispatch = useDispatch();
 
   const submitHandler = (data) => {
-    try {
-      if (!editing) {
-        dispatch(createArticle(data));
-      } else {
-        dispatch(
-          updateArticle({
-            updatedData: data,
-            slug: params.slug,
-          })
-        );
-      }
-      setServerErrors(null);
-    } catch (error) {
-      if (error.response && error.response.data) {
-        setServerErrors(error.response.errors);
-      }
+    if (!editing) {
+      dispatch(createArticle(data));
+    } else {
+      dispatch(
+        updateArticle({
+          updatedData: data,
+          slug: params.slug,
+        })
+      );
     }
   };
   useEffect(() => {
     if (articlePost === 'resolved') {
       history.replace('/articles');
-      dispatch(articlesActions.resetArticlePost());
+      dispatch(fetchArticles());
     }
   }, [articlePost, dispatch, history]);
-
+  useEffect(
+    () => () => dispatch(articlesActions.resetArticlePost()),
+    [dispatch]
+  );
   return (
     <section className="main__new-article article">
       <div className="main__new-article-header">
@@ -150,9 +146,10 @@ function ArticleForm({ editing, article }) {
           type="submit"
           className="main__new-article-submit"
           value="Send"
+          disabled={articlePost === 'loading'}
         />
       </form>
-      {serverErrors && (
+      {articlePost === 'rejected' && (
         <Alert
           message="Error"
           description="Server responsed with error"

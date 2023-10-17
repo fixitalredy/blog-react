@@ -2,7 +2,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { NavLink, useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
@@ -17,7 +17,6 @@ function SignIn() {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const [error, setError] = useState(false);
   const dispatch = useDispatch();
   const logStatus = useSelector((state) => state.authReducer.logStatus);
   const regEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/i;
@@ -27,15 +26,11 @@ function SignIn() {
     dispatch(loginAuth(data));
   };
   useEffect(() => {
-    if (logStatus === 'rejected') {
-      setError(true);
-    }
     if (logStatus === 'resolved') {
-      setError(false);
       history.replace('/articles');
-      dispatch(authActions.resetLogStatus());
     }
   }, [dispatch, history, logStatus]);
+  useEffect(() => () => dispatch(authActions.resetLogStatus()), [dispatch]);
   return (
     <div className="main__sign-container">
       <h2 className="main__sign-title">Sign In</h2>
@@ -79,6 +74,7 @@ function SignIn() {
           type="submit"
           className="main__sign-submit"
           id="sumbitReg"
+          disabled={logStatus === 'loading'}
           value="Login"
         />
         <p className="main__footer">
@@ -86,13 +82,12 @@ function SignIn() {
           <NavLink
             to="/sign-up"
             style={{ color: '#1890FF', textDecoration: 'none' }}
-            href="213"
           >
             Sign Up
           </NavLink>
           .
         </p>
-        {error && (
+        {logStatus === 'rejected' && (
           <Alert
             style={{ marginTop: '20px' }}
             type="error"

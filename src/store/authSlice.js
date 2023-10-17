@@ -100,10 +100,23 @@ const authSlice = createSlice({
       .addCase(registerAuth.rejected, (state) => {
         state.logStatus = 'rejected';
       })
+      .addCase(registerAuth.pending, (state) => {
+        state.logStatus = 'loading';
+      })
+      .addCase(loginAuth.pending, (state) => {
+        state.logStatus = 'loading';
+      })
       .addCase(loginAuth.rejected, (state) => {
         state.logStatus = 'rejected';
       })
+      .addCase(edit.pending, (state) => {
+        state.logStatus = 'loading';
+      })
+      .addCase(edit.rejected, (state) => {
+        state.logStatus = 'rejected';
+      })
       .addCase(edit.fulfilled, (state, action) => {
+        state.logStatus = 'resolved';
         state.loggedPerson = action.payload;
         localStorage.user = JSON.stringify(action.payload);
       });

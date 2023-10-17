@@ -20,9 +20,8 @@ export const fetchArticles = createAsyncThunk(
       const result = response.data.articles;
       return result;
     } catch (error) {
-      rejectWithValue(error);
+      return rejectWithValue(error);
     }
-    return null;
   }
 );
 export const createArticle = createAsyncThunk(
@@ -40,9 +39,8 @@ export const createArticle = createAsyncThunk(
       const result = response.data;
       return result;
     } catch (error) {
-      rejectWithValue(error);
+      return rejectWithValue(error);
     }
-    return null;
   }
 );
 export const updateArticle = createAsyncThunk(
@@ -69,9 +67,8 @@ export const deleteArticle = createAsyncThunk(
   'articles/deleteArticle',
   async (slug, { rejectWithValue }) => {
     try {
-      const response = await axios.delete(`/articles/${slug}`);
-      const result = response.data;
-      return result;
+      await axios.delete(`/articles/${slug}`);
+      return slug;
     } catch (error) {
       rejectWithValue(error);
     }
@@ -115,20 +112,28 @@ const articlesSlice = createSlice({
         state.status = 'rejected';
         state.error = action.payload;
       })
-      .addCase(updateArticle.rejected, (state) => {
-        state.articlePost = 'rejected';
+      .addCase(updateArticle.pending, (state) => {
+        state.articlePost = 'loading';
       })
       .addCase(updateArticle.fulfilled, (state) => {
         state.articlePost = 'resolved';
       })
+      .addCase(updateArticle.rejected, (state) => {
+        state.articlePost = 'rejected';
+      })
+      .addCase(createArticle.pending, (state) => {
+        state.articlePost = 'loading';
+      })
       .addCase(createArticle.fulfilled, (state) => {
         state.articlePost = 'resolved';
       })
-      .addCase(deleteArticle.rejected, (state) => {
+      .addCase(createArticle.rejected, (state) => {
         state.articlePost = 'rejected';
       })
-      .addCase(deleteArticle.fulfilled, (state) => {
-        state.articlePost = 'resolved';
+      .addCase(deleteArticle.fulfilled, (state, action) => {
+        state.articles = state.articles.filter(
+          (item) => item.slug !== action.payload
+        );
       });
   },
 });

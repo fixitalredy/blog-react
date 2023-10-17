@@ -1,14 +1,14 @@
 /* eslint-disable react-redux/useSelector-prefer-selectors */
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { NavLink, useHistory } from 'react-router-dom';
 import './SignForms.scss';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { Alert } from 'antd';
 
-import { registerAuth } from '../../store/authSlice';
+import { registerAuth, authActions } from '../../store/authSlice';
 
 function SignUp() {
   const {
@@ -19,7 +19,6 @@ function SignUp() {
   } = useForm({});
   const logStatus = useSelector((state) => state.authReducer.logStatus);
 
-  const [error, setError] = useState(false);
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -30,14 +29,11 @@ function SignUp() {
   const regEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/i;
 
   useEffect(() => {
-    if (logStatus === 'rejected') {
-      setError(true);
-    }
     if (logStatus === 'resolved') {
       history.replace('/articles');
-      setError(false);
     }
   }, [dispatch, history, logStatus]);
+  useEffect(() => () => dispatch(authActions.resetLogStatus()), [dispatch]);
   return (
     <div className="main__sign-container">
       <h2 className="main__sign-title">Create new account</h2>
@@ -153,20 +149,20 @@ function SignUp() {
           type="submit"
           className="main__sign-submit"
           id="sumbitReg"
+          disabled={logStatus === 'loading'}
           value="Create"
         />
         <p className="main__footer">
           Already have an account?{' '}
           <NavLink
-            to="/sign-up"
+            to="/sign-in"
             style={{ color: '#1890FF', textDecoration: 'none' }}
-            href="213"
           >
             Sign In
           </NavLink>
           .
         </p>
-        {error && (
+        {logStatus === 'rejected' && (
           <Alert
             style={{ marginTop: '20px' }}
             type="error"

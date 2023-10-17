@@ -1,17 +1,19 @@
 /* eslint-disable react-redux/useSelector-prefer-selectors */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable react/jsx-props-no-spreading */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import './SignForms.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom/cjs/react-router-dom';
+import Alert from 'antd/es/alert/Alert';
 
-import { edit } from '../../store/authSlice';
+import { edit, authActions } from '../../store/authSlice';
 
 function Edit() {
   const dispatch = useDispatch();
   const isLogged = useSelector((state) => state.authReducer.isLogged);
+  const logStatus = useSelector((state) => state.authReducer.logStatus);
 
   const {
     register,
@@ -26,10 +28,13 @@ function Edit() {
   const submitHandler = (data) => {
     dispatch(edit(data));
   };
+  useEffect(() => () => dispatch(authActions.resetLogStatus()), [dispatch]);
+
   const regEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/i;
   if (!isLogged) {
     return <Redirect to="/sign-in" />;
   }
+
   return (
     <div className="main__sign-container">
       <h2 className="main__sign-title">Edit Profile</h2>
@@ -121,9 +126,18 @@ function Edit() {
         <input
           type="submit"
           className="main__sign-submit"
+          disabled={logStatus === 'loading'}
           id="sumbit"
           value="Save"
         />
+        {logStatus === 'rejected' && (
+          <Alert
+            style={{ marginTop: '20px' }}
+            type="error"
+            message="Edit error"
+            description="Some inputs are incorrect"
+          />
+        )}
       </form>
     </div>
   );

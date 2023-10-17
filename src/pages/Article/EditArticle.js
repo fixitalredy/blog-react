@@ -2,7 +2,7 @@
 /* eslint-disable func-names */
 /* eslint-disable react/no-unstable-nested-components */
 import React, { useState, useEffect, useCallback } from 'react';
-import { useHistory, useParams } from 'react-router-dom/cjs/react-router-dom';
+import { Redirect, useParams } from 'react-router-dom/cjs/react-router-dom';
 import { Spin } from 'antd';
 import axios from 'axios';
 
@@ -28,7 +28,6 @@ function EditArticle() {
   });
   const [loading, setLoading] = useState(true);
   const params = useParams();
-  const history = useHistory();
 
   const getArticle = useCallback(async (slug) => {
     setLoading(true);
@@ -49,16 +48,13 @@ function EditArticle() {
     };
     fetchFunc();
   }, [getArticle, params.slug]);
-
-  useEffect(() => {
-    if (
-      currentArticle.author.username !== JSON.parse(localStorage.user).username
-    ) {
-      history.replace('/articles');
-    }
-  }, [currentArticle, history]);
   if (loading) {
     return <Spin size="large" />;
+  }
+  if (
+    currentArticle.author.username !== JSON.parse(localStorage.user).username
+  ) {
+    return <Redirect to="/articles" />;
   }
   return <ArticleForm editing article={currentArticle} />;
 }

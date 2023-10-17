@@ -2,7 +2,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { uid } from 'uid';
-import { Spin } from 'antd';
+import { Spin, Alert } from 'antd';
 
 import './ArticleList.scss';
 
@@ -30,6 +30,13 @@ function ArticleList() {
     <article className="articles">
       {status === 'loading' ? (
         <Spin style={{ marginTop: '20vh' }} size="large" />
+      ) : status === 'rejected' ? (
+        <Alert
+          style={{ marginTop: '100px' }}
+          type="error"
+          message="Articles error"
+          description="Error while fetching articles"
+        />
       ) : (
         articlesList
       )}
