@@ -28,8 +28,11 @@ function ArticleItem({
 }) {
   const user = useSelector((state) => state.authReducer.loggedPerson);
   const isLogged = useSelector((state) => state.authReducer.isLogged);
+  const likeStatus = useSelector((state) => state.uiReducer.likeStatus);
+
   const dispatch = useDispatch();
   const history = useHistory();
+
   const [liked, setLiked] = useState(favorited);
   const [count, setCount] = useState(favoritesCount);
 
@@ -104,6 +107,7 @@ function ArticleItem({
             <button
               type="button"
               className={liked ? 'article__like' : 'article__like--unliked'}
+              disabled={likeStatus === 'loading'}
               onClick={() => likeHandler()}
             >
               {count}

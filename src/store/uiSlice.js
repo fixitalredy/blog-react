@@ -41,7 +41,7 @@ const uiSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(likeUnlikePost.pending, (state) => {
-        state.likeStatus = 'pending';
+        state.likeStatus = 'loading';
       })
       .addCase(likeUnlikePost.fulfilled, (state) => {
         state.likeStatus = 'resolved';
